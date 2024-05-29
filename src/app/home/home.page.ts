@@ -4,6 +4,9 @@ import { UserI } from '../common/models/users.models';
 import { FirestoreService } from '../common/services/firestore.service';
 import { FormsModule } from '@angular/forms';
 import { IoniconsModule } from '../common/modules/ionicons.module';
+import { AuthService } from 'src/app/common/services/auth.service';
+import { IonicModule, NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,73 +15,108 @@ import { IoniconsModule } from '../common/modules/ionicons.module';
   styleUrls: ['home.page.scss'],
   standalone: true,
   imports: [IonImg, IonList, IonLabel, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonInput,
-    IonIcon, IonButton, IonButtons, IonSpinner, IonInput, IonCard, 
+    IonIcon, IonButton, IonButtons, IonSpinner, IonInput, IonCard,
     FormsModule,
     IoniconsModule
   ],
 })
 export class HomePage {
 
-  users: UserI[] = [];
-
-  newUser: UserI;
+ users: UserI[] = [];
+  newUser: UserI = this.initUser();
   cargando: boolean = false;
+  user: UserI | undefined;
+  showForm: boolean = false;
 
-  user: UserI
+  constructor(private firestoreService: FirestoreService, private navCtrl: NavController,private authService: AuthService,private router: Router,) {}
 
-
-  constructor(private firestoreService: FirestoreService) {
-    this.loadusers();
-    this.initUser();
-    this.getuser();
+  ngOnInit() {
+    this.loadUsers();
+    this.getUser();
   }
 
-  loadusers() {
-    this.firestoreService.getCollectionChanges<UserI>('Usuarios').subscribe( data => {
+  loadUsers() {
+    this.firestoreService.getCollectionChanges<UserI>('Usuarios').subscribe(data => {
       if (data) {
-        this.users = data
+        this.users = data;
       }
-
-    })
-
+    });
   }
 
-  initUser() {
-    this.newUser = {
-      nombre: null,
-      edad: null,
-      id: this.firestoreService.createIdDoc(),
-    }
+  initUser(): UserI {
+    return {
+      id: '',
+      nombre: '',
+      apellido: '',
+      direccion: '',
+      dni: '',
+      edad: 0,
+      cuit: '',
+      claveFiscal: '',
+      password: '',
+    };
   }
 
   async save() {
     this.cargando = true;
-    await this.firestoreService.createDocumentID(this.newUser, 'Usuarios', this.newUser.id)
+    const userId = this.newUser.id;
+    await this.firestoreService.createUserWithSubcollections(this.newUser, userId);
     this.cargando = false;
+    this.newUser = this.initUser();
+    this.showForm = false;
   }
 
-  edit(user: UserI) {
-    console.log('edit -> ', user);
-    this.newUser = user;
+  async edit(user: UserI) {
+    console.log(user.id)
+    this.navCtrl.navigateForward(`/home/${user.id}`);
   }
 
-  async delete(user: UserI) {
+
+async delete(user: UserI) {
+  try {
     this.cargando = true;
+    console.log(user.id)
     await this.firestoreService.deleteDocumentID('Usuarios', user.id);
     this.cargando = false;
+    // this.loadUsers();
+  } catch (error) {
+    this.cargando = false;
+    console.error('Error al eliminar usuario:', error);
+
+  }
+}
+
+  async getUser() {
+    const authUser = await this.firestoreService.getAuthUser();
+    if (authUser) {
+      const uid = authUser.uid;
+      const res = await this.firestoreService.getDocument<UserI>('Usuarios/' + uid);
+      this.user = res['data']();
+    }
   }
 
-  async getuser() {
-    const uid = '682cb706-1ba6-4f95-9e44-2095e1eeedef';
-    // this.firestoreService.getDocumentChanges<UserI>('Usuarios/' + uid).subscribe( data => {
-    //   console.log('getuser -> ', data);
-    //   if (data) {
-    //     this.user = data
-    //   }
-    // })
+  toggleForm() {
+    this.showForm = !this.showForm;
+  }
 
-    const res = await this.firestoreService.getDocument<UserI>('Usuarios/' + uid);
-    this.user = res.data()
+  navigateToPage(page: string) {
+    // Implementa la lógica de navegación aquí
+  }
+
+  ver(user: UserI) {
+  this.navCtrl.navigateForward(`/ver-usuario/${user.id}`);
+}
+
+
+  goBack() {
+    window.history.back();
+  }
+
+
+
+  async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
 
