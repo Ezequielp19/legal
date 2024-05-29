@@ -1,26 +1,21 @@
-import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, IonCard, IonInput, IonSpinner, IonButtons, IonButton, IonIcon, IonImg } from '@ionic/angular/standalone';
-import { UserI } from '../common/models/users.models';
-import { FirestoreService } from '../common/services/firestore.service';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IoniconsModule } from '../common/modules/ionicons.module';
-import { AuthService } from 'src/app/common/services/auth.service';
 import { IonicModule, NavController } from '@ionic/angular';
+import { FirestoreService } from '../../app/common/services/firestore.service';
+import { UserI } from '../../app/common/models/users.models';
+import { AuthService } from 'src/app/common/services/auth.service';
+import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonImg, IonList, IonLabel, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonInput,
-    IonIcon, IonButton, IonButtons, IonSpinner, IonInput, IonCard,
-    FormsModule,
-    IoniconsModule
-  ],
+  imports: [CommonModule, FormsModule, IonicModule],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
  users: UserI[] = [];
   newUser: UserI = this.initUser();
