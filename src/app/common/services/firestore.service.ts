@@ -85,9 +85,9 @@ export class FirestoreService {
     return deleteDoc(ref);
   }
 
-  // createIdDoc(): string {
-  //   // return uuidv4();
-  // }
+  createIdDoc(): string {
+    return uuidv4();
+  }
 
   async getAuthUser() {
     return { uid: '05OTLvPNICH5Gs9ZsW0k' };

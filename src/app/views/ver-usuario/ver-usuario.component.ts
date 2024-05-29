@@ -1,32 +1,44 @@
-// import { FirestoreService } from './../common/services/firestore.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FirestoreService } from '../../common/services/firestore.service';
-import { doc, getDoc } from 'firebase/firestore';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular'; // Importar IonicModule
-
-
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, IonCard, IonInput, IonSpinner, IonButtons, IonButton, IonIcon, IonImg, IonCardHeader, IonCardContent, IonCardTitle, IonBackButton } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-ver-usuario',
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [
+    CommonModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonLabel,
+    IonList,
+    IonItem,
+    IonCard,
+    IonInput,
+    IonSpinner,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonImg,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
+    IonBackButton
+  ],
   templateUrl: './ver-usuario.component.html',
   styleUrls: ['./ver-usuario.component.scss'],
 })
 export class VerUsuarioComponent implements OnInit {
   userId: string;
-  // usuario: any;
-
-
-usuario: any = {};
+  usuario: any = {};
   subcollections = ['AFIP', 'certIngreso', 'declaracionJurada', 'facturacion', 'infoPersonal', 'planPago'];
-
 
   constructor(
     private route: ActivatedRoute,
-    private FirestoreService:FirestoreService,
+    private firestoreService: FirestoreService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -35,10 +47,10 @@ usuario: any = {};
     this.cargarDatosUsuario();
   }
 
-    async cargarDatosUsuario() {
+  async cargarDatosUsuario() {
     try {
       console.log('Usuario ID:', this.userId); // Agrega esta línea para verificar el ID
-      const usuarioDoc = await this.FirestoreService.getDocumentById('Usuarios', this.userId);
+      const usuarioDoc = await this.firestoreService.getDocumentById('Usuarios', this.userId);
       console.log('Documento del usuario:', usuarioDoc); // Agrega esta línea para verificar el documento
 
       if (usuarioDoc) {
@@ -46,9 +58,9 @@ usuario: any = {};
 
         // Cargar datos de subcolecciones
         for (const subcollection of this.subcollections) {
-          const subcollectionId = await this.FirestoreService.getDocumentIdInSubcollection(`Usuarios/${this.userId}`, subcollection);
+          const subcollectionId = await this.firestoreService.getDocumentIdInSubcollection(`Usuarios/${this.userId}`, subcollection);
           if (subcollectionId) {
-            const subcollectionData = await this.FirestoreService.getDocumentById(`Usuarios/${this.userId}/${subcollection}`, subcollectionId);
+            const subcollectionData = await this.firestoreService.getDocumentById(`Usuarios/${this.userId}/${subcollection}`, subcollectionId);
             this.usuario[subcollection] = subcollectionData;
           }
         }

@@ -46,14 +46,12 @@ export class HomePage implements OnInit {
 
   initUser(): UserI {
     return {
-      id: '',
+      id: this.firestoreService.createIdDoc(),
       nombre: '',
       apellido: '',
       direccion: '',
       dni: '',
       edad: 0,
-      cuit: '',
-      claveFiscal: '',
       password: '',
     };
   }

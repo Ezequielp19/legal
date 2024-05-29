@@ -1,29 +1,51 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, IonCard, IonInput, IonSpinner, IonButtons, IonButton, IonIcon, IonImg } from '@ionic/angular/standalone';
-
 import { CommonModule } from '@angular/common';
-import { IonicModule,AlertController } from '@ionic/angular';
+import { AlertController} from '@ionic/angular';
 import { AuthService } from '../../common/services/auth.service';
-import { RouterLink } from '@angular/router';
+
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, IonCard, IonInput, IonSpinner, IonButtons, IonButton, IonIcon, IonImg , IonCardHeader, IonCardContent, IonCardTitle} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule,RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonLabel,
+    IonList,
+    IonItem,
+    IonCard,
+    IonInput,
+    IonSpinner,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonImg,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle
+  ],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
   email: string = '';
   password: string = '';
-   registroExitoso: boolean = false;
-   errorMessage: string | null = null;
+  registroExitoso: boolean = false;
+  errorMessage: string | null = null;
 
-
-
-  constructor(private authService: AuthService, private router: Router, private alertController: AlertController) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private alertController: AlertController
+  ) {}
 
   login() {
     this.authService.login(this.email, this.password)
@@ -33,14 +55,14 @@ export class LoginPage {
           this.router.navigate(['/home']);
         }, 2000);
       })
-     .catch(error => {
+      .catch(error => {
         console.error(error);
         this.errorMessage = this.getErrorMessage(error.code);
         this.mostrarAlertaError();
       });
-}
+  }
 
- private getErrorMessage(errorCode: string): string {
+  private getErrorMessage(errorCode: string): string {
     switch (errorCode) {
       case 'auth/email-already-in-use':
         return 'El correo electrónico ya está en uso.';
@@ -53,7 +75,6 @@ export class LoginPage {
     }
   }
 
-
   async mostrarAlertaError() {
     const alert = await this.alertController.create({
       header: 'Error',
@@ -62,8 +83,4 @@ export class LoginPage {
     });
     await alert.present();
   }
-
-
-
-
 }
