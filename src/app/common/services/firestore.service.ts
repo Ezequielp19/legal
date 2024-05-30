@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import {
- Firestore,
+  Firestore,
   collectionData,
   collection,
   doc,
@@ -15,10 +15,9 @@ import {
   UpdateData,
   getDocs
 } from '@angular/fire/firestore';
-
-const { v4: uuidv4 } = require('uuid');
-
 import { Observable } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+
 
 // Convertidor genérico para Firestore
 const converter = <T>() => ({
@@ -29,15 +28,12 @@ const converter = <T>() => ({
 const docWithConverter = <T>(firestore: Firestore, path: string) =>
   doc(firestore, path).withConverter(converter<T>());
 
-
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class FirestoreService {
 
- private firestore: Firestore = inject(Firestore);
+  private firestore: Firestore = inject(Firestore);
 
   constructor() { }
 
@@ -98,7 +94,7 @@ export class FirestoreService {
     await setDoc(userRef, userData);
 
     // Create subcollections
-    const subcollections = ['certIngreso', 'declaracionJurada', 'facturacion', 'infoPersonal', 'planPago', 'AFIP'];
+    const subcollections = ['certIngreso', 'declaracionJurada', 'facturacion', 'infoPersonal', 'planPago', 'AFIP', 'sueldos', 'f931'];
     for (const subcollection of subcollections) {
       const subcollectionRef = doc(collection(userRef, subcollection));
       await setDoc(subcollectionRef, { initialized: true }); // Puedes añadir datos por defecto aquí

@@ -118,5 +118,4 @@ async delete(user: UserI) {
     this.router.navigate(['/login']);
   }
 
-
 }

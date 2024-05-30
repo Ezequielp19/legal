@@ -34,7 +34,8 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem
 export class VerUsuarioComponent implements OnInit {
   userId: string;
   usuario: any = {};
-  subcollections = ['AFIP', 'certIngreso', 'declaracionJurada', 'facturacion', 'infoPersonal', 'planPago'];
+  subcollections = ['AFIP', 'certIngreso', 'declaracionJurada',
+  'facturacion', 'infoPersonal', 'planPago', 'sueldos', 'f931'];
 
   constructor(
     private route: ActivatedRoute,
@@ -49,9 +50,9 @@ export class VerUsuarioComponent implements OnInit {
 
   async cargarDatosUsuario() {
     try {
-      console.log('Usuario ID:', this.userId); // Agrega esta línea para verificar el ID
+
       const usuarioDoc = await this.firestoreService.getDocumentById('Usuarios', this.userId);
-      console.log('Documento del usuario:', usuarioDoc); // Agrega esta línea para verificar el documento
+      console.log('Documento del usuario:', usuarioDoc); 
 
       if (usuarioDoc) {
         this.usuario = usuarioDoc;
